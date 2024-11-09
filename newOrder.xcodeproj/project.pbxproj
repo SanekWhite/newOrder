@@ -6,8 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		BA5E9D272CDADDA40023C791 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = BA5E9D262CDADDA40023C791 /* SnapKit */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
-		BABC85AC2CCE5E09003F6790 /* newOrder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = newOrder.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BABC85AC2CCE5E09003F6790 /* newOrder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = newOrder.app; path = "/Users/sanekwhite/Desktop/Work/newOrder/build/Debug-iphoneos/newOrder.app"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -36,6 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BA5E9D272CDADDA40023C791 /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -46,16 +51,7 @@
 			isa = PBXGroup;
 			children = (
 				BABC85AE2CCE5E09003F6790 /* newOrder */,
-				BABC85AD2CCE5E09003F6790 /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		BABC85AD2CCE5E09003F6790 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				BABC85AC2CCE5E09003F6790 /* newOrder.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -78,6 +74,7 @@
 			);
 			name = newOrder;
 			packageProductDependencies = (
+				BA5E9D262CDADDA40023C791 /* SnapKit */,
 			);
 			productName = newOrder;
 			productReference = BABC85AC2CCE5E09003F6790 /* newOrder.app */;
@@ -107,8 +104,11 @@
 			);
 			mainGroup = BABC85A32CCE5E09003F6790;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				BA5E9D252CDADDA40023C791 /* XCRemoteSwiftPackageReference "SnapKit" */,
+			);
 			preferredProjectObjectVersion = 77;
-			productRefGroup = BABC85AD2CCE5E09003F6790 /* Products */;
+			productRefGroup = BABC85A32CCE5E09003F6790;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -335,6 +335,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		BA5E9D252CDADDA40023C791 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.7.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		BA5E9D262CDADDA40023C791 /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BA5E9D252CDADDA40023C791 /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = BABC85A42CCE5E09003F6790 /* Project object */;
 }
