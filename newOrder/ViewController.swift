@@ -10,7 +10,7 @@ import SnapKit
 
 class ViewModel {
     var viewModels: [PromoViewModel] = [.init(screenTitle: "",
-                                              promocodes: .init(arrayLiteral: .init(title: "Hello", titleOneOrder: "Промокод действует на первый заказ в приложении", percent: 5, endDate: Date(), info: "-5%", active: false)),
+                                              promocodes: .init(arrayLiteral: .init(title: "Hello", titleOneOrder: "Промокод действует на первый заказ в приложении", percent: 5, endDate: Date(), info: "-5%", active: true)),
                                               products: .init(arrayLiteral: .init(price: 2500, title: "Продукт 1")), paymentDiscount: 10, baseDiscount: 10),
                                         .init(screenTitle: "",
                                               promocodes: .init(arrayLiteral: .init(title: "Hello", titleOneOrder: "Промокод действует на первый заказ в приложении", percent: 5, endDate: Date(), info: "-5%", active: false)),
@@ -66,6 +66,8 @@ class ViewController: UIViewController {
         
         updateAllViews()
         
+        
+            
     }
     
     func updateAllViews() {
@@ -95,10 +97,10 @@ class ViewController: UIViewController {
         
         
         
-        
+        let footerView = FooterView()
         var previousView: UIView?
         viewModel.viewModels.forEach { promoViewModel in
-            let view = PromoView(promo: promoViewModel)
+            let view = PromoView(promo: promoViewModel, footerView: footerView)
             view.translatesAutoresizingMaskIntoConstraints = false
             containerView.addSubview(view)
             
@@ -198,45 +200,10 @@ struct PromoViewModel {
 
 class PromoView: UIView {
     var promo: PromoViewModel!
-    var footerView = FooterView()
+    var footerView: FooterView?
     var viewModeling =  ViewModel()
-    func setUpUpdate() {
-        let totalPriceProduct = viewModeling.viewModels.flatMap { $0.products }.reduce(0) { $0 + $1.price }
-        let totalPriceProductInt = Int(totalPriceProduct)
-        footerView.priceForTwoItemsTotalText.text = "\(totalPriceProductInt) ₽"
+   
 
-        // Получаем значение скидок
-        let paymentDiscount = viewModeling.viewModels.compactMap { $0.paymentDiscount }.first ?? 0
-        var totalPaymentDisc: Double = 0
-        if paymentDiscount > 0 {
-            totalPaymentDisc = Double(totalPriceProduct * (paymentDiscount / 100))
-            let totalPaymentDiscInt = Int(totalPaymentDisc)
-            footerView.paymentTotalText.text = "\(-totalPaymentDiscInt) ₽"
-        }
-
-        // Получаем значение базовой скидки
-        let baseDiscount = viewModeling.viewModels.compactMap { $0.baseDiscount }.first ?? 0
-        var totalBaseDisc: Double = 0
-        if baseDiscount > 0 {
-            totalBaseDisc = Double(totalPriceProduct * (baseDiscount / 100))
-            let totalBaseDiscInt = Int(totalBaseDisc)
-            footerView.discountsTotalText.text = "\(-totalBaseDiscInt) ₽"
-        }
-
-        // Применение активных промокодов
-        var totalPromocodeDiscount: Double = 0
-        let activePromocodes = viewModeling.viewModels.flatMap { $0.promocodes }.filter { $0.active }
-        for promocode in activePromocodes {
-            let discount = totalPriceProduct * (Double(promocode.percent) / 100)
-            totalPromocodeDiscount += discount
-        }
-
-        footerView.promoCodeTotalText.text = "\(-Int(totalPromocodeDiscount)) ₽"
-
-        // Обновление итоговой стоимости
-        let finalTotal = totalPriceProduct - (totalPaymentDisc + totalBaseDisc + totalPromocodeDiscount)
-        footerView.total.text = "\(Int(finalTotal)) ₽"
-    }
     
     // Элементы интерфейса для отображения промокода
     private let titleLabel = UILabel()
@@ -245,7 +212,12 @@ class PromoView: UIView {
     private let infoLabel = UILabel()
     private let actionPromoOneOrder2 = UILabel()
     private let percentView = UIView()
-    private let promocodes1Switch = UISwitch()
+    //private let promocodes1Switch = UISwitch()
+    lazy var promoCode1Switch: UISwitch = {
+           let switcher = UISwitch()
+           switcher.addTarget(self, action: #selector(promoCode1SwitchToggled), for: .valueChanged)
+           return switcher
+       }()
     static var activeSwitchCount = 0
     // Основное представление промокода
     private lazy var viewDesk: UIView = {
@@ -259,9 +231,10 @@ class PromoView: UIView {
     
     
     
-    convenience init(promo: PromoViewModel) {
+    convenience init(promo: PromoViewModel, footerView: FooterView) {
         self.init(frame: .zero)
         self.promo = promo
+        self.footerView = footerView
         setupView()
         setupConstraints()
         configure(with: promo)
@@ -309,10 +282,10 @@ class PromoView: UIView {
         viewDesk.addSubview(percentView)
         
         
-        promocodes1Switch.isOn = false
-        promocodes1Switch.onTintColor = UIColor(red: 255/255, green: 69/255, blue: 0/255, alpha: 1)
-        viewDesk.addSubview(promocodes1Switch)
-        promocodes1Switch.addTarget(self, action: #selector(promoCode1SwitchToggled(_:)), for: .valueChanged)
+        promoCode1Switch.isOn = false
+        promoCode1Switch.onTintColor = UIColor(red: 255/255, green: 69/255, blue: 0/255, alpha: 1)
+        viewDesk.addSubview(promoCode1Switch)
+        //promoCode1Switch.addTarget(self, action: #selector(promoCode1SwitchToggled(_:)), for: .valueChanged)
     }
     
     @objc func promoCode1SwitchToggled(_ sender: UISwitch) {
@@ -330,7 +303,7 @@ class PromoView: UIView {
              
              PromoView.activeSwitchCount -= 1
          }
-         
+        
          // Обновляем данные о промокоде
          if let promo = promo, let firstPromoCode = promo.promocodes.first {
              var promoCode = firstPromoCode
@@ -338,7 +311,16 @@ class PromoView: UIView {
              
              // Обновление интерфейса
              configure(with: promo)
-             setUpUpdate()
+             if let footer = footerView {
+                 print("FooterView инициализирован")
+                 footer.setUpUpdate()
+             } else {
+                 print("FooterView не инициализирован")
+             }
+             footerView?.setUpUpdate()
+             
+             
+             
          }
     }
       
@@ -384,7 +366,7 @@ class PromoView: UIView {
             make.centerY.equalTo(percentView)
         }
         
-        promocodes1Switch.snp.makeConstraints { make in
+        promoCode1Switch.snp.makeConstraints { make in
             make.top.equalTo(viewDesk.snp.top).offset(21)
             make.right.equalTo(viewDesk.snp.right).inset(20)
         }
@@ -541,10 +523,8 @@ class HeaderView: UIView {
 class FooterView: UIView {
     
     var viewModeling =  ViewModel()
-    
-    
     var promo: PromoViewModel?
-    
+
   
     private lazy var summTable: UIView = {
         let summTable = UIView()
@@ -615,7 +595,7 @@ class FooterView: UIView {
             make.top.equalToSuperview().offset(24)
             make.left.equalToSuperview().offset(32)
             make.right.equalToSuperview().offset(-32)
-            make.bottom.equalToSuperview().inset(158)
+            make.bottom.equalTo(willPlaceAnOrderButton.snp.bottom)
         }
         
         priceForTwoItems.snp.makeConstraints { make in
@@ -668,9 +648,9 @@ class FooterView: UIView {
         }
         
         willPlaceAnOrderButton.snp.makeConstraints { make in
-            make.top.equalTo(summTable.snp.bottom).offset(16)
-            make.left.equalTo(totalText)
-            make.right.equalTo(total)
+            make.top.equalTo(total.snp.bottom).offset(16)
+            make.left.equalTo(summTable.snp.left)
+            make.right.equalTo(summTable.snp.right)
             make.height.equalTo(54)
             
         }
@@ -691,7 +671,7 @@ class FooterView: UIView {
     
     @objc func buttonTapped(_ sender: UIButton) {
         print("Button tapped!")
-        sender.backgroundColor = .green 
+        //sender.backgroundColor = .green
     }
     private func createLabel(text: String, fontSize: CGFloat, color: UIColor) -> UILabel {
         let label = UILabel()
@@ -754,7 +734,9 @@ class FooterView: UIView {
         
     }
     
+    
     func setUpUpdate() {
+        print("setUpUpdate вызывается")
         let totalPriceProduct = viewModeling.viewModels.flatMap { $0.products }.reduce(0) { $0 + $1.price }
         let totalPriceProductInt = Int(totalPriceProduct)
         priceForTwoItemsTotalText.text = "\(totalPriceProductInt) ₽"
@@ -776,20 +758,23 @@ class FooterView: UIView {
             let totalBaseDiscInt = Int(totalBaseDisc)
             discountsTotalText.text = "\(-totalBaseDiscInt) ₽"
         }
-
+      //  let promoFu = viewModeling.viewModels.flatMap { $0.promocodes}.reduce(0) { $0 + $1.}
+        
         // Применение активных промокодов
         var totalPromocodeDiscount: Double = 0
         let activePromocodes = viewModeling.viewModels.flatMap { $0.promocodes }.filter { $0.active }
+        
         for promocode in activePromocodes {
             let discount = totalPriceProduct * (Double(promocode.percent) / 100)
             totalPromocodeDiscount += discount
         }
 
-        promoCodeTotalText.text = "\(-Int(totalPromocodeDiscount)) ₽"
+        promoCodeTotalText.text = "\(totalPromocodeDiscount) ₽"
 
         // Обновление итоговой стоимости
         let finalTotal = totalPriceProduct - (totalPaymentDisc + totalBaseDisc + totalPromocodeDiscount)
         total.text = "\(Int(finalTotal)) ₽"
+        
     }
     
     @objc func error3ButtonTapped(_ sender: UIButton) {
