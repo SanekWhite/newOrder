@@ -11,7 +11,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		BABC85AC2CCE5E09003F6790 /* newOrder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = newOrder.app; path = "/Users/sanekwhite/Desktop/Work/newOrder/build/Debug-iphoneos/newOrder.app"; sourceTree = "<absolute>"; };
+		BA4546582CE1362500A6DFBC /* newOrder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = newOrder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -51,6 +51,7 @@
 			isa = PBXGroup;
 			children = (
 				BABC85AE2CCE5E09003F6790 /* newOrder */,
+				BA4546582CE1362500A6DFBC /* newOrder.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -77,7 +78,7 @@
 				BA5E9D262CDADDA40023C791 /* SnapKit */,
 			);
 			productName = newOrder;
-			productReference = BABC85AC2CCE5E09003F6790 /* newOrder.app */;
+			productReference = BA4546582CE1362500A6DFBC /* newOrder.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
